@@ -17,6 +17,7 @@ FROM alpine:latest
 LABEL maintainer="Coder Nacho"
 LABEL description="Dockerfile for Apache with PHP for development environment"
 ENV APACHE_DOCUMENT_ROOT $[APACHE_DOCUMENT_ROOT]
+ARG APACHE_DOCUMENT_ROOT
 RUN apk update && \
     apk add --no-cache apache2 php php-apache2 && \
     mkdir -p ${APACHE_DOCUMENT_ROOT}
