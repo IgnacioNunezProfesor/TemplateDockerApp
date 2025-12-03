@@ -10,6 +10,7 @@ if (Test-Path $envFile) {
             $envVars[$matches[1]] = $matches[2]
         }
     }
+}
 Get-Content $envFile | ForEach-Object {
         if ($_ -match '^\s*([^=]+)=(.*)$') {
             $envVars[$matches[1]] = $matches[2]
