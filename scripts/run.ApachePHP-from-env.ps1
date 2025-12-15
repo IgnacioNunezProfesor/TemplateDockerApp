@@ -43,7 +43,8 @@ $dockerCmd = @(
     "--env-file $envFile",
     "--hostname $containerName",
     "--network $networkName",
-    "--ip $ip"
+    "--ip $ip",
+    "--hostentry ${ip} ${servername}",
     $imageName
 ) -join ' '
 
