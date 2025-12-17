@@ -2,19 +2,32 @@
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    
+    // Versión del esquema de configuración de depuración de Visual Studio Code.
+    // Define el formato del archivo launch.json. 
     "version": "0.2.0",
+    // Lista de configuraciones de depuración disponibles en el proyecto.
     "configurations": [
         {
+            // Nombre de la configuración que aparecerá en el menú de depuración de VS Code.
             "name": "Listen for Xdebug",
+            // Tipo de depurador utilizado.
             "type": "php",
+            // Indica que VS Code se pone en modo escucha para recibir conexiones.
             "request": "launch",
+            // Puerto por el que Xdebug 3 se comunica con VS Code.
             "port": 9003
         },
         {
+            // Nombre de la configuración para lanzar el navegador Microsoft Edge.
             "name": "Launch Edge",
+            // Indica que VS Code debe lanzar el navegador al iniciar la depuración.
             "request": "launch",
+            // Tipo de depuración
             "type": "msedge",
+            // URL donde se ejecuta la aplicación Moodle en el entorno local.
             "url": "http://moodle.asir:8081",
+            // Carpeta raíz del código fuente del proyecto.
             "webRoot": "${workspaceFolder}/src"
         }
     ]
