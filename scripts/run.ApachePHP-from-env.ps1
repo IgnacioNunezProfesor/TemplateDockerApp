@@ -61,15 +61,15 @@ if (Test-Path $apachelogpath) {
 }
 
 # Copiar archivo de configuración de 
-$ConfigSrc = ".\docker\http\moodle\config-dist.php"
-$ConfigDest = ".\moodle_src\config.php"
+#$ConfigSrc = ".\docker\http\moodle\config-dist.php"
+#$ConfigDest = ".\moodle_src\config.php"
 
-if (Test-Path $ConfigSrc) {
-    Write-Host "Copiando configuración de : $ConfigSrc -> $ConfigDest"
-    Copy-Item -Path $ConfigSrc -Destination $ConfigDest -Force
-} else {
-    Write-Warning "Archivo de configuración no encontrado: $ConfigSrc"
-}
+#if (Test-Path $ConfigSrc) {
+#    Write-Host "Copiando configuración de : $ConfigSrc -> $ConfigDest"
+#    Copy-Item -Path $ConfigSrc -Destination $ConfigDest -Force
+#} else {
+#    Write-Warning "Archivo de configuración no encontrado: $ConfigSrc"
+#}
 
 # Ejecutar el contenedor Docker
 $dockerCmd = @(

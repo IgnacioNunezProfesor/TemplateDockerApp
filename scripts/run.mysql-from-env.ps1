@@ -24,7 +24,7 @@ $containerName = $envVars['DB_CONTAINER_NAME']
 #$dbRootPass = $envVars['DB_ROOT_PASS']
 $dbDataDir = $envVars['DB_DATADIR']
 $dbLogDir = $envVars['DB_LOG_DIR']
-$portMapping = $envVars['DB_PORT_MAPPING'] 
+$port = $envVars['DB_PORT'] 
 $imageName = $envVars['DB_IMAGE_NAME']
 $networkName = $envVars['DB_NETWORK_NAME']
 $ip = $envVars["DB_IP"]
@@ -42,14 +42,13 @@ if (docker ps -a --filter "name=^${containerName}$" --format "{{.Names}}" | Sele
 $dockerCmd = @(
     "docker run -d",
     "--name $containerName",
-    "-p $portMapping",
+    "-p ${port}:${port}",
     "-v .\mysql_data:$dbDataDir",
     "-v .\logs\mysql:$dbLogDir",
     "--env-file $envFile",
     "--hostname $containerName",
     "--network $networkName",
-    "--ip $ip",
-    "--hostentry ${ip} mysqlhost",
+    "--ip $ip"
     $imageName
 ) -join ' '
 

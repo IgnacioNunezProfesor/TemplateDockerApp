@@ -6,24 +6,24 @@
     "configurations": [
        
         {
-            "name": "Launch moodle",
+            "name": "Launch app",
             "request": "launch",
             "type": "msedge",
-            "url": "http://moodle.localhost:80",
-            "webRoot": "${workspaceFolder}/moodle_src"
+            "url": "http://apache.localhost",
+            "webRoot": "${workspaceFolder}/src"
         },
         {
-            "name": "Launch root",
+            "name": "Launch php-info",
             "request": "launch",
             "type": "msedge",
-            "url": "http://apachephp.localhost:80",
-            "webRoot": "${workspaceFolder}/src"
+            "url": "http://apachephp.localhost/php-info",
+            "webRoot": "${workspaceFolder}/phpinfo"
         }
     ],
     "compounds": [
         {
             "name": "Launch all",
-            "configurations": ["Launch moodle", "Launch root"]
+            "configurations": ["Launch app", "Launch php-info"]
         }
     ]
 }
