@@ -29,23 +29,15 @@ $phpinfofoldername = $envVars['PHPINFO_FOLDER_NAME']
 
 $apachelogpath = $envVars['APACHE_LOG_PATH']
 
-if (
-        $envVars['NETWORK_NAME'] -and `
-        $envVars['NETWORK_SUBNET'] -and `
-        $envVars['NETWORK_SUBNET_GATEWAY'] -and `
-        $envVars['SERVER_IP'] -and `
-        -not (docker network ls --filter "name=^${envVars['NETWORK_NAME]}$" --format "{{.Name}}")
-    ) {
-        $networkName = $envVars['NETWORK_NAME']
-        $networksubnet = $envVars['NETWORK_SUBNET']
-        $networksubnetgateway = $envVars['NETWORK_SUBNET_GATEWAY']
-        $networkDriver = $envVars['NETWORK_DRIVER']
-        
-        Write-Host "Creando red: $networkName"
-        docker network create $networkName --driver=$networkDriver --subnet=$networksubnet --gateway=$networksubnetgateway
-    }else{
-        Write-Warning "La red Docker ya existe o no se proporcionaron todos los parámetros necesarios."
-    }
+if ($envVars['NETWORK_NAME'] -and $envVars['NETWORK_SUBNET'] -and $envVars['NETWORK_SUBNET_GATEWAY']) {
+    $networkName = $envVars['NETWORK_NAME']
+    $networksubnet = $envVars['NETWORK_SUBNET']
+    $networksubnetgateway = $envVars['NETWORK_SUBNET_GATEWAY']
+    $networkDriver = $envVars['NETWORK_DRIVER']
+    .\scripts\create_network.ps1 -networkName $networkName -subnet $networksubnet -gateway $networksubnetgateway -driver $networkDriver        
+}else{
+    Write-Warning "La red Docker ya existe o no se proporcionaron todos los parámetros necesarios."
+}
 
 
 if (docker ps -a --filter "name=^${containerName}$" --format "{{.Names}}" | Select-Object -First 1) {
@@ -76,6 +68,7 @@ $dockerCmd = @(
     "docker run -d",
     "--name ${containerName}",
     "-p ${serverport}:80",
+    "-p 9003:9003",
     "-v ${phpinfovolumepath}:${phpinfofoldername}",
     "-v ${volumepath}:${foldername}",
     "-v ${datavolume}:${datafolder}",

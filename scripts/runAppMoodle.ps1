@@ -35,6 +35,21 @@ foreach ($file in $envFiles) {
 
 Write-Host "Variables cargadas correctamente." -ForegroundColor Green
 
+# Ejecutar scripts de MySQL
+Write-Host "`n=== Ejecutando build.mysql-from-env.ps1 ===" -ForegroundColor Cyan
+if (!(Test-Path ".\scripts\build.mysql-from-env.ps1")) {
+    Write-Host "ERROR: No existe build.mysql-from-env.ps1" -ForegroundColor Red
+    exit 1
+}
+.\scripts\build.mysql-from-env.ps1
+
+Write-Host "`n=== Ejecutando run.mysql-from-env.ps1 ===" -ForegroundColor Cyan
+if (!(Test-Path ".\scripts\run.mysql-from-env.ps1")) {
+    Write-Host "ERROR: No existe run.mysql-from-env.ps1" -ForegroundColor Red
+    exit 1
+}
+.\scripts\run.mysql-from-env.ps1
+
 # Ejecutar scripts existentes
 Write-Host "`n=== Ejecutando build.ApachePHP-from-env.ps1 ===" -ForegroundColor Cyan
 if (!(Test-Path ".\scripts\build.ApachePHP-from-env.ps1")) {
@@ -93,9 +108,11 @@ Set-Content -Path $tempConfig -Value $content -Encoding UTF8
 
 Write-Host "Archivo config.php generado correctamente." -ForegroundColor Green
 
+
+
 # Copiar al contenedor
 $container = $Env:CONTAINER_NAME
-$datafolder = $Env:DATA_FOLDER
+$foldername = $Env:FOLDER_NAME
 
 
 
@@ -106,7 +123,7 @@ if (-not $container) {
 
 Write-Host "`n=== Copiando config.php al contenedor $container ===" -ForegroundColor Cyan
 
-docker cp $tempConfig "${container}:${datafolder}/config.php"
+docker cp $tempConfig "${container}:${foldername}/config.php"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "ERROR: No se pudo copiar config.php al contenedor" -ForegroundColor Red
@@ -116,4 +133,34 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "`n=== Configuración copiada correctamente ===" -ForegroundColor Green
 Write-Host "Archivo: config.php → /var/www/apache/config.php"
 Write-Host "Contenedor: $container"
+
+Write-Host "`n=== Ejecutando upgrade.php en el contenedor ===" -ForegroundColor Cyan
+
+if (-not $container) {
+    Write-Host "ERROR: CONTAINER_NAME no está definido. No se puede ejecutar upgrade.php." -ForegroundColor Red
+    exit 1
+}
+
+# Ruta dentro del contenedor (ajústala si tu DocumentRoot es distinto)
+$cliPath = "${foldername}/admin/cli/upgrade.php"
+
+# Comprobar que el archivo existe dentro del contenedor
+$check = docker exec $container sh -c "test -f $cliPath && echo OK"
+
+if ($check -ne "OK") {
+    Write-Host "ERROR: No se encuentra $cliPath dentro del contenedor." -ForegroundColor Red
+    exit 1
+}
+
+# Ejecutar el upgrade
+docker exec -it $container php $cliPath --non-interactive
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "ERROR: Falló la ejecución de upgrade.php" -ForegroundColor Red
+    exit 1
+}
+
+Write-Host "upgrade.php ejecutado correctamente. Base de datos actualizada/creada." -ForegroundColor Green
+
+
 Write-Host "`n=== Despliegue completado ===" -ForegroundColor Green
