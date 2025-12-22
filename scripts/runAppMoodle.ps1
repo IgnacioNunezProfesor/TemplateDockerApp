@@ -95,6 +95,7 @@ Write-Host "Archivo config.php generado correctamente." -ForegroundColor Green
 
 # Copiar al contenedor
 $container = $Env:CONTAINER_NAME
+$datafolder = $Env:DATA_FOLDER
 
 
 
@@ -105,7 +106,7 @@ if (-not $container) {
 
 Write-Host "`n=== Copiando config.php al contenedor $container ===" -ForegroundColor Cyan
 
-docker cp $tempConfig "${container}:/var/www/apache/config.php"
+docker cp $tempConfig "${container}:${datafolder}/config.php"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "ERROR: No se pudo copiar config.php al contenedor" -ForegroundColor Red
