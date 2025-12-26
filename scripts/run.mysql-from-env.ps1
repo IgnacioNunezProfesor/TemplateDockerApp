@@ -14,14 +14,7 @@ Get-Content $envFile | ForEach-Object {
     }
 }
 
-
-# Configurar variables
-
 $containerName = $envVars['DB_CONTAINER_NAME']
-#$dbName = $envVars['DB_NAME']
-#$dbUSer = $envVars['DB_USER']
-#$dbPass = $envVars['DB_PASS']
-#$dbRootPass = $envVars['DB_ROOT_PASS']
 
 $dbDataDir = $envVars['DB_DATADIR']
 $dbLogDir = $envVars['DB_LOG_DIR']
@@ -47,6 +40,17 @@ if (docker ps -a --filter "name=^${containerName}$" --format "{{.Names}}" | Sele
     Write-Host "Eliminando contenedor existente: $containerName"
     docker stop $containerName 2>$null
     docker rm $containerName 2>$null
+}
+
+# Eliminar directorios de datos y logs si existen
+if (Test-Path $dbDataDir) {
+    Write-Host "Eliminando directorio de datos: $dbDataDir"
+    Remove-Item -Path $dbDataDir -Recurse -Force
+}
+
+if (Test-Path $dbLogDir) {
+    Write-Host "Eliminando directorio de logs: $dbLogDir"
+    Remove-Item -Path $dbLogDir -Recurse -Force
 }
 
 # Construir y ejecutar comando docker
