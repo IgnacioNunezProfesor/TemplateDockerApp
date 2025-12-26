@@ -1,2 +1,4 @@
+# Ignora la carpeta de logs (por ejemplo, logs de Apache o MySQL)
 logs/
+# Ignora la carpeta donde se almacenan los datos persistentes de MySQL
 mysql_data/
