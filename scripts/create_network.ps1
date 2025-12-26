@@ -11,10 +11,10 @@
 #>
 
 param(
-    [string]$NetworkName = "MoodleNet",
+    [string]$NetworkName = "MyMoodleNet",
     [string]$Driver = "bridge",
-    [string]$Subnet = "172.25.0.0/16",
-    [string]$Gateway = "172.25.0.1"
+    [string]$Subnet = "192.168.1.0/24",
+    [string]$Gateway = "192.168.1.1"
 )
 
 Write-Host "`n=== Validando red Docker antes de crearla ===" -ForegroundColor Cyan
@@ -101,6 +101,8 @@ if ($Subnet -and $Gateway) {
 }
 
 $command += " $NetworkName"
+
+Write-Host "Ejecutando comando: $command" -ForegroundColor Yellow
 
 Invoke-Expression $command
 

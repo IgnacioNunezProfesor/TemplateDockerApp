@@ -64,103 +64,45 @@ if (!(Test-Path ".\scripts\run.ApachePHP-from-env.ps1")) {
 }
 .\scripts\run.ApachePHP-from-env.ps1
 
-# Sustitución de variables en config.php
-Write-Host "`n=== Generando config.php con valores reales ===" -ForegroundColor Cyan
 
-$moodleConfigTemplate = ".\CurrentAppAssets\appconfig\moodle.config.php"
-$tempConfig = ".\CurrentAppAssets\appconfig\config.php"
+# Obtener variables de entorno necesarias para la instalación
+$container = $env:APACHE_CONTAINER_NAME
+$cliPath = "${FOLDER_NAME}/admin/cli/install.php"
+$dbhost = $env:MYSQL_HOST
+$dbname = $env:MYSQL_DATABASE
+$dbuser = $env:MYSQL_USER
+$dbpass = $env:MYSQL_PASSWORD
+$dbport = $env:MYSQL_PORT
+$wwwroot = $env:MOODLE_URL
+$datadir = $env:MOODLE_DATA
 
-if (!(Test-Path $moodleConfigTemplate)) {
-    Write-Host "ERROR: No se encuentra $moodleConfigTemplate" -ForegroundColor Red
-    exit 1
-}
+Write-Host "`n=== Ejecutando instalación de Moodle ===" -ForegroundColor Cyan
 
-# Cargar plantilla
-$content = Get-Content $moodleConfigTemplate -Raw
-
-# Mapeo entre variables Moodle y variables reales
-$mapping = @{
-    "MOODLE_DB_HOST"   = $Env:DB_CONTAINER_NAME
-    "MOODLE_DB_NAME"   = $Env:DB_NAME
-    "MOODLE_DB_USER"   = $Env:DB_USER
-    "MOODLE_DB_PASS"   = $Env:DB_PASS
-    "MOODLE_URL"       = $Env:SERVER_NAME
-    "MOODLE_DATA_PATH" = $Env:DATA_FOLDER
-}
-
-foreach ($key in $mapping.Keys) {
-    $value = $mapping[$key]
-
-    if (-not $value) {
-        Write-Host "ADVERTENCIA: La variable $key no tiene valor asignado." -ForegroundColor Yellow
-        continue
-    }
-
-    # Sustituir getenv('VAR') por 'valor'
-    $pattern = "getenv\('$key'\)"
-    $replacement = "'$value'"
-
-    $content = $content -replace $pattern, $replacement
-}
-
-# Guardar archivo final
-Set-Content -Path $tempConfig -Value $content -Encoding UTF8
-
-Write-Host "Archivo config.php generado correctamente." -ForegroundColor Green
+# Ejecutar script de instalación con variables de entorno
+docker exec -it $container php $cliPath `
+    --dbtype=mysqli `
+    --dbhost=$dbhost `
+    --dbname=$dbname `
+    --dbuser=$dbuser `
+    --dbpass=$dbpass `
+    --dbport=$dbport `
+    --wwwroot=$wwwroot `
+    --datadir=$datadir `
+    --fullname="Moodle en Docker" `
+    --shortname="MoodleDocker" `
+    --adminuser="admin" `
+    --adminpass="Admin123!" `
+    --lang=es `
+    --non-interactive `
+    --agree-license
 
 
-
-# Copiar al contenedor
-$container = $Env:CONTAINER_NAME
-$foldername = $Env:FOLDER_NAME
-
-
-
-if (-not $container) {
-    Write-Host "ERROR: CONTAINER_NAME no está definido" -ForegroundColor Red
-    exit 1
-}
-
-Write-Host "`n=== Copiando config.php al contenedor $container ===" -ForegroundColor Cyan
-
-docker cp $tempConfig "${container}:${foldername}/config.php"
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR: No se pudo copiar config.php al contenedor" -ForegroundColor Red
+    Write-Host "ERROR: Falló la ejecución de install.php" -ForegroundColor Red
     exit 1
 }
 
-Write-Host "`n=== Configuración copiada correctamente ===" -ForegroundColor Green
-Write-Host "Archivo: config.php → /var/www/apache/config.php"
-Write-Host "Contenedor: $container"
-
-Write-Host "`n=== Ejecutando upgrade.php en el contenedor ===" -ForegroundColor Cyan
-
-if (-not $container) {
-    Write-Host "ERROR: CONTAINER_NAME no está definido. No se puede ejecutar upgrade.php." -ForegroundColor Red
-    exit 1
-}
-
-# Ruta dentro del contenedor (ajústala si tu DocumentRoot es distinto)
-$cliPath = "${foldername}/admin/cli/upgrade.php"
-
-# Comprobar que el archivo existe dentro del contenedor
-$check = docker exec $container sh -c "test -f $cliPath && echo OK"
-
-if ($check -ne "OK") {
-    Write-Host "ERROR: No se encuentra $cliPath dentro del contenedor." -ForegroundColor Red
-    exit 1
-}
-
-# Ejecutar el upgrade
-docker exec -it $container php $cliPath --non-interactive
-
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR: Falló la ejecución de upgrade.php" -ForegroundColor Red
-    exit 1
-}
-
-Write-Host "upgrade.php ejecutado correctamente. Base de datos actualizada/creada." -ForegroundColor Green
-
+Write-Host "install.php ejecutado correctamente. Base de datos actualizada/creada." -ForegroundColor Green
 
 Write-Host "`n=== Despliegue completado ===" -ForegroundColor Green

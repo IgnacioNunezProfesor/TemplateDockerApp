@@ -3,10 +3,12 @@ FROM alpine:latest
 ARG SERVER_PORT=${SERVER_PORT}
 ARG SERVER_NAME=${SERVER_NAME}
 ARG FOLDER_NAME=${FOLDER_NAME}
+ARG DATA_FOLDER=${DATA_FOLDER}
 
 ENV FOLDER_NAME=${FOLDER_NAME}
 ENV SERVER_PORT=${SERVER_PORT}
 ENV SERVER_NAME=${SERVER_NAME}
+ENV DATA_FOLDER=${DATA_FOLDER}
 
 EXPOSE ${SERVER_PORT}
 EXPOSE 9003
@@ -19,7 +21,10 @@ RUN apk update && apk upgrade && \
 RUN mkdir -p ${FOLDER_NAME} \
     && chown -R apache:apache ${FOLDER_NAME} \
     && chmod -R 755 ${FOLDER_NAME} \
-    && mkdir -p /etc/php84/conf.d
+    && mkdir -p /etc/php84/conf.d \
+    && mkdir -p ${DATA_FOLDER} \
+    && chown -R apache:apache ${DATA_FOLDER} \
+    && chmod -R 755 ${DATA_FOLDER}
 
 COPY ./docker/http/apache+php/apache/httpd.conf /etc/apache2/httpd.conf
 COPY ./docker/http/apache+php/apache/conf.d/*.conf /etc/apache2/conf.d/

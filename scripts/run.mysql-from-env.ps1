@@ -22,6 +22,7 @@ $containerName = $envVars['DB_CONTAINER_NAME']
 #$dbUSer = $envVars['DB_USER']
 #$dbPass = $envVars['DB_PASS']
 #$dbRootPass = $envVars['DB_ROOT_PASS']
+
 $dbDataDir = $envVars['DB_DATADIR']
 $dbLogDir = $envVars['DB_LOG_DIR']
 $port = $envVars['DB_PORT'] 
@@ -33,11 +34,11 @@ if ($envVars['DB_NETWORK_NAME'] -and $envVars['DB_NETWORK_SUBNET'] -and $envVars
         $networkName = $envVars['DB_NETWORK_NAME']
         $networksubnet = $envVars['DB_NETWORK_SUBNET']
         $networksubnetgateway = $envVars['DB_NETWORK_SUBNET_GATEWAY']
-        $networkdriver = $envVars['NETWORK_DRIVER']
+        $networkdriver = $envVars['DB_NETWORK_DRIVER']
 
         Write-Host "Creando red: $networkName"
         .\scripts\create_network.ps1 -networkName $networkName -subnet $networksubnet -gateway $networksubnetgateway -driver $networkDriver    
-    }else{
+}else{
         Write-Warning "La red Docker ya existe o no se proporcionaron todos los parámetros necesarios."
     }
 
