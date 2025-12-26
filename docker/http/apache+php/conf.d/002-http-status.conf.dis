@@ -1,8 +1,11 @@
 <IfModule status_module>
+    # Activa información detallada del estado del servidor 
     ExtendedStatus On
 
     <Location "/status">
+        # Define que la ruta /status mostrará la página de estado del servidor
         SetHandler server-status
+        # Permite el acceso a cualquier usuario
         Require all granted
 
         # Para permitir acceso desde tu red interna:
