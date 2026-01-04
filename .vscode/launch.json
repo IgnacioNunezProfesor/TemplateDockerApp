@@ -2,28 +2,28 @@
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
+    "version": "0.2.0", //formato del archivo .json
+    "configurations": [ //lista de configuraciones de depuración
        
         {
-            "name": "Launch app",
-            "request": "launch",
-            "type": "msedge",
-            "url": "http://apache.localhost",
-            "webRoot": "${workspaceFolder}/src"
+            "name": "Launch app", //Nombre que aparecerá en el menú de depuración
+            "request": "launch", //VScode lanzará un proceso
+            "type": "msedge", //Se abrirá microsoft edge
+            "url": "http://apache.localhost", //URL que se abrirá cuando se inicie la configuración
+            "webRoot": "${workspaceFolder}/src" //Carpeta raíz donde está el código web, se usa para mapear archivos y permitir debugging
         },
         {
-            "name": "Launch php-info",
-            "request": "launch",
-            "type": "msedge",
-            "url": "http://apachephp.localhost/php-info",
-            "webRoot": "${workspaceFolder}/phpinfo"
+            "name": "Launch php-info", //Nombre de la segunda configuración
+            "request": "launch", //VSCode lanzará algo nuevo.
+            "type": "msedge", //lo mismo de antes
+            "url": "http://apachephp.localhost/php-info", //Se abrirá la página php-info
+            "webRoot": "${workspaceFolder}/phpinfo" //Carpeta donde está el código de esa página
         }
     ],
-    "compounds": [
+    "compounds": [ //Inicio de la lista de configuraciones compuestas (se lanzan varias cosas a la vez)
         {
-            "name": "Launch all",
-            "configurations": ["Launch app", "Launch php-info"]
+            "name": "Launch all", //Nombre del grupo que ejecutará varias configuraciones a la vez.
+            "configurations": ["Launch app", "Launch php-info"] //lista de configuraciones que se lanzrán simultáneamente.
         }
     ]
 }
