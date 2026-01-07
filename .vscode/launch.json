@@ -2,27 +2,48 @@
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+
+    // Configuración de debugging para Visual Studio Code
+    // Versión del formato de configuración - compatible con VSCode 1.46+
     "version": "0.2.0",
+    // Configuraciones individuales de debugging
     "configurations": [
-       
+        // Configuración para depurar la aplicación principal
         {
+            // Nombre descriptivo mostrado en el selector de debugging
             "name": "Launch app",
+
+            // Nombre descriptivo mostrado en el selector de debugging
             "request": "launch",
+
+            // Tipo de depurador: Microsoft Edge (navegador)
             "type": "msedge",
+
+            // URL donde se ejecuta la aplicación en desarrollo local
             "url": "http://apache.localhost",
+
+            // Ruta raíz del proyecto para mapear archivos fuente
             "webRoot": "${workspaceFolder}/src"
         },
+        // Configuración alternativa para depurar phpinfo()
         {
             "name": "Launch php-info",
             "request": "launch",
             "type": "msedge",
+
+            // URL específica para la página de información PHP
             "url": "http://apachephp.localhost/php-info",
+
+            // Ruta diferente porque phpinfo está en carpeta separada
             "webRoot": "${workspaceFolder}/phpinfo"
         }
     ],
+
+    // Grupos de configuraciones que se pueden ejecutar simultáneamente
     "compounds": [
         {
             "name": "Launch all",
+            // Ejecuta ambas configuraciones al mismo tiempo
             "configurations": ["Launch app", "Launch php-info"]
         }
     ]
