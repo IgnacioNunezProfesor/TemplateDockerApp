@@ -1,11 +1,20 @@
+# Comprueba si el módulo de estado de Apache está cargado
 <IfModule status_module>
+
+    # Activa el estado extendido, mostrando información más detallada del servidor
     ExtendedStatus On
 
+    # Define la ubicación donde se mostrará la información de estado
     <Location "/status">
+        # Asigna el manejador server-status a esta URL
         SetHandler server-status
+
+        # Permite acceso a todos los clientes
         Require all granted
 
-        # Para permitir acceso desde tu red interna:
+        # # Para permitir acceso solo desde una red interna específica
+        # # Descomentar y ajustar según sea necesario
         # Require ip 192.168.1.0/24
     </Location>
+
 </IfModule>
