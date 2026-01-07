@@ -2,20 +2,20 @@
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
+    "version": "0.2.0", // Versión del esquema que usa VS Code para interpretar este archivo.
+    "configurations": [ // Aquí se definen todas las configuraciones de depuración disponibles.
         {
-            "name": "Listen for Xdebug",
-            "type": "php",
-            "request": "launch",
-            "port": 9003
+            "name": "Listen for Xdebug", // Nombre que aparecerá en el menú de depuración.
+            "type": "php",               // Indica que esta configuración es para depurar código PHP.
+            "request": "launch",         // VS Code iniciará un proceso de escucha para Xdebug.
+            "port": 9003                 // Puerto donde Xdebug enviará las conexiones de depuración.
         },
         {
-            "name": "Launch Edge",
-            "request": "launch",
-            "type": "msedge",
-            "url": "http://moodle.asir:8081",
-            "webRoot": "${workspaceFolder}/src"
+            "name": "Launch Edge",                 // Nombre visible de esta configuración.
+            "request": "launch",                   // VS Code abrirá un navegador al iniciar la depuración.
+            "type": "msedge",                      // Especifica que se usará Microsoft Edge.
+            "url": "http://moodle.asir:8081",      // Página que se abrirá automáticamente al iniciar.
+            "webRoot": "${workspaceFolder}/src"    // Carpeta raíz del proyecto para mapear archivos
         }
     ]
 }

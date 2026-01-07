@@ -1,9 +1,9 @@
-<IfModule status_module>
-    ExtendedStatus On
+<IfModule status_module> # Activa este bloque solo si el módulo de estado está cargado
+    ExtendedStatus On # Muestra información extendida en /status
 
-    <Location "/status">
-        SetHandler server-status
-        Require all granted
+    <Location "/status"> # Ruta donde se consulta el estado del servidor
+        SetHandler server-status # Handler que muestra la página de estado
+        Require all granted # Permite acceso a todos
 
         # Para permitir acceso desde tu red interna:
         # Require ip 192.168.1.0/24
