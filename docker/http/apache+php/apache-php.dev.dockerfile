@@ -11,7 +11,6 @@ ENV SERVER_NAME=${SERVER_NAME}
 ENV DATA_FOLDER=${DATA_FOLDER}
 
 EXPOSE ${SERVER_PORT}
-EXPOSE 9003
 
 RUN apk update && apk upgrade && \
     apk --no-cache add apache2 apache2-utils apache2-proxy php php-apache2 \
