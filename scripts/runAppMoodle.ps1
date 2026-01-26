@@ -66,8 +66,8 @@ if (!(Test-Path ".\scripts\run.ApachePHP-from-env.ps1")) {
 
 
 # Obtener variables de entorno necesarias para la instalación
-$container = $env:APACHE_CONTAINER_NAME
-$cliPath = "${FOLDER_NAME}/admin/cli/install.php"
+$container = $env:CONTAINER_NAME
+$cliPath = "$env:FOLDER_NAME/admin/cli/install.php"
 $dbhost = $env:MYSQL_HOST
 $dbname = $env:MYSQL_DATABASE
 $dbuser = $env:MYSQL_USER
@@ -78,23 +78,40 @@ $datadir = $env:MOODLE_DATA
 
 Write-Host "`n=== Ejecutando instalación de Moodle ===" -ForegroundColor Cyan
 
+
+
 # Ejecutar script de instalación con variables de entorno
-docker exec -it $container php $cliPath `
-    --dbtype=mysqli `
-    --dbhost=$dbhost `
-    --dbname=$dbname `
-    --dbuser=$dbuser `
-    --dbpass=$dbpass `
-    --dbport=$dbport `
-    --wwwroot=$wwwroot `
-    --datadir=$datadir `
-    --fullname="Moodle en Docker" `
-    --shortname="MoodleDocker" `
-    --adminuser="admin" `
-    --adminpass="Admin123!" `
-    --lang=es `
-    --non-interactive `
-    --agree-license
+$command = "docker exec -it $container php $cliPath " + `
+    "--dbtype=mysqli " + `
+    "--dbhost=$dbhost " + `
+    "--dbname=$dbname " + `
+    "--dbuser=$dbuser " + `
+    "--dbpass=$dbpass " + `
+    "--dbport=$dbport " + `
+    "--wwwroot=$wwwroot " + `
+    "--datadir=$datadir " + `
+    "--fullname='Moodle en Docker' " + `
+    "--shortname='MoodleDocker' " + `
+    "--adminuser='admin' " + `
+    "--adminpass='Admin123!' " + `
+    "--lang=es " + `
+    "--non-interactive " + `
+    "--agree-license"
+
+Write-Host "Ejecutando comando:" -ForegroundColor Yellow
+Write-Host $command -ForegroundColor Gray
+
+# Comprobar si $cliPath existe en el contenedor
+$checkCommand = "docker exec $container php -l $cliPath"
+
+Write-Host "Comprobando si $cliPath existe en el contenedor..." -ForegroundColor Cyan
+Invoke-Expression $checkCommand
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "ERROR: $cliPath no existe en el contenedor." -ForegroundColor Red
+    exit 1
+}
+Invoke-Expression $command
 
 
 
