@@ -17,11 +17,18 @@ $Dockerfile = $envVars['DB_DOCKERFILE']
 $Tag = $envVars['DB_IMAGE_NAME']
 $buildArgsSTR = @(
     "--build-arg DB_UNIX_USER=" + $envVars['DB_UNIX_USER'],
-    "--build-arg DB_DATADIR=" + $envVars['DB_DATADIR'],
-    "--build-arg DB_LOG_DIR=" + $envVars['DB_LOG_DIR']
+    "--build-arg DB_SERVER_DATADIR=" + $envVars['DB_SERVER_DATADIR'],
+    "--build-arg DB_SERVER_LOG=" + $envVars['DB_SERVER_LOG']
 ) -join ' '
 
-$cmddockerSTR = @('docker build', '--no-cache', '-f', $Dockerfile, '-t', $Tag, $buildArgsSTR, '.') -join ' '
+$cmddockerSTR = @(
+    'docker build', 
+    '--no-cache', 
+    '-f', $Dockerfile, 
+    '-t', $Tag, 
+    $buildArgsSTR, 
+    '.'
+) -join ' '
 
 
 Write-Host "Ejecutando: docker $cmddockerSTR" 

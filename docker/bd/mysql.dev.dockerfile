@@ -1,11 +1,11 @@
 FROM alpine:latest
 
-ARG DB_DATADIR=${DB_DATADIR} \
-    DB_LOG_DIR=${DB_LOG_DIR} \
+ARG DB_DATADIR=${DB_SERVER_DATADIR} \
+    DB_LOG_DIR=${DB_SERVER_LOG} \
     DB_UNIX_USER=${DB_UNIX_USER}
 
-ENV DB_DATADIR=${DB_DATADIR} \
-    DB_LOG_DIR=${DB_LOG_DIR} \
+ENV DB_DATADIR=${DB_SERVER_DATADIR} \
+    DB_LOG_DIR=${DB_SERVER_LOG} \
     DB_UNIX_USER=${DB_UNIX_USER}
 
 # Instalar MariaDB y utilidades
@@ -19,8 +19,8 @@ RUN addgroup -S ${DB_UNIX_USER} && \
     adduser -S ${DB_UNIX_USER} -G ${DB_UNIX_USER}
 
 # Crear directorios y asignar permisos al usuario UNIX
-RUN mkdir -p /entrypointsql ${DB_DATADIR} ${DB_LOG_DIR} && \
-    chown -R ${DB_UNIX_USER}:${DB_UNIX_USER} ${DB_DATADIR} ${DB_LOG_DIR} /entrypointsql
+RUN mkdir -p /entrypointsql ${DB_SERVER_DATADIR} ${DB_SERVER_LOG} && \
+    chown -R ${DB_UNIX_USER}:${DB_UNIX_USER} ${DB_SERVER_DATADIR} ${DB_SERVER_LOG} /entrypointsql
 
 # Copiar scripts y configuración
 COPY ./docker/bd/scripts/docker-entrypoint.sh /entrypoint.sh
