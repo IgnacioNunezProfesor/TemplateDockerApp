@@ -70,13 +70,13 @@ if (!(Test-Path ".\scripts\run.ApachePHP-from-env.ps1")) {
 # Obtener variables de entorno necesarias para la instalación
 $container = $env:CONTAINER_NAME
 $cliPath = "$env:FOLDER_NAME/admin/cli/install.php"
-$dbhost = $env:MYSQL_HOST
-$dbname = $env:MYSQL_DATABASE
-$dbuser = $env:MYSQL_USER
-$dbpass = $env:MYSQL_PASSWORD
-$dbport = $env:MYSQL_PORT
-$wwwroot = $env:MOODLE_URL
-$datadir = $env:MOODLE_DATA
+$dbhost = $env:DB_CONTAINER_NAME
+$dbname = $env:DB_NAME
+$dbuser = "root"
+$dbpass = $env:DB_ROOT_PASS
+$dbport = $env:DB_PORT
+$wwwroot = $env:FOLDER_NAME
+$datadir = $env:DATA_FOLDER
 
 Write-Host "`n=== Ejecutando instalación de Moodle ===" -ForegroundColor Cyan
 
@@ -85,13 +85,12 @@ Write-Host "`n=== Ejecutando instalación de Moodle ===" -ForegroundColor Cyan
 # Ejecutar script de instalación con variables de entorno
 $command = "docker exec -it $container php $cliPath " + `
     "--dbtype=mysqli " + `
-    "--dbhost=$dbhost " + `
     "--dbname=$dbname " + `
     "--dbuser=$dbuser " + `
     "--dbpass=$dbpass " + `
     "--dbport=$dbport " + `
     "--wwwroot=$wwwroot " + `
-    "--datadir=$datadir " + `
+    "--dataroot=$datadir " + `
     "--fullname='Moodle en Docker' " + `
     "--shortname='MoodleDocker' " + `
     "--adminuser='admin' " + `
