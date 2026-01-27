@@ -1,3 +1,0 @@
-[submodule "moodleapp"]
-	path = moodleapp
-	url = https://github.com/moodle/moodle.git
