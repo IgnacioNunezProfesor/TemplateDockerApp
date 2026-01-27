@@ -10,11 +10,13 @@
 
 Write-Host "=== Cargando variables de entorno ===" -ForegroundColor Cyan
 
-# Archivos .env
-$envApache = ".\env\dev.apachephp.env"
-$envMysql = ".\env\dev.mysql.env"
+# Cargar todos los archivos .env de la carpeta .\env
+$envFiles = Get-ChildItem -Path ".\env" -Filter "*.env" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
 
-$envFiles = @($envApache, $envMysql)
+if ($envFiles.Count -eq 0) {
+    Write-Host "ERROR: No se encontraron archivos .env en .\env" -ForegroundColor Red
+    exit 1
+}
 
 foreach ($file in $envFiles) {
     if (!(Test-Path $file)) {
