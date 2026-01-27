@@ -69,6 +69,7 @@ if (!(Test-Path ".\scripts\run.ApachePHP-from-env.ps1")) {
 
 # Obtener variables de entorno necesarias para la instalación
 $container = $env:CONTAINER_NAME
+$servername = $env:SERVER_NAME
 $cliPath = "$env:FOLDER_NAME/admin/cli/install.php"
 $dbhost = $env:DB_CONTAINER_NAME
 $dbname = $env:DB_NAME
@@ -77,6 +78,27 @@ $dbpass = $env:DB_ROOT_PASS
 $dbport = $env:DB_PORT
 $wwwroot = $env:FOLDER_NAME
 $datadir = $env:DATA_FOLDER
+
+# Verificar y eliminar config.php si existe
+$configPath = "$container`:$wwwroot/config.php"
+Write-Host "Comprobando si config.php existe en $wwwroot..." -ForegroundColor Cyan
+$checkConfig = "docker exec $container test -f $wwwroot/config.php"
+Invoke-Expression $checkConfig
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "Eliminando config.php..." -ForegroundColor Yellow
+    docker exec $container rm -f "$wwwroot/config.php"
+    Write-Host "config.php eliminado." -ForegroundColor Green
+}
+
+# Verificar y vaciar $datadir si existe
+Write-Host "Comprobando si $datadir existe..." -ForegroundColor Cyan
+$checkDatadir = "docker exec $container test -d $datadir"
+Invoke-Expression $checkDatadir
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "Vaciando contenido de $datadir..." -ForegroundColor Yellow
+    docker exec $container sh -c "rm -rf $datadir/* $datadir/.*"
+    Write-Host "$datadir vaciado." -ForegroundColor Green
+}
 
 Write-Host "`n=== Ejecutando instalación de Moodle ===" -ForegroundColor Cyan
 
@@ -89,7 +111,7 @@ $command = "docker exec -it $container php $cliPath " + `
     "--dbuser=$dbuser " + `
     "--dbpass=$dbpass " + `
     "--dbport=$dbport " + `
-    "--wwwroot=$wwwroot " + `
+    "--wwwroot=$servername " + `
     "--dataroot=$datadir " + `
     "--fullname='Moodle en Docker' " + `
     "--shortname='MoodleDocker' " + `
@@ -112,6 +134,11 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "ERROR: $cliPath no existe en el contenedor." -ForegroundColor Red
     exit 1
 }
+
+
+
+# Ejecutar el comando de instalación
+Write-Host "Ejecutando install.php..." -ForegroundColor Cyan
 Invoke-Expression $command
 
 
