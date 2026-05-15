@@ -8,7 +8,7 @@ param(
     [switch]$Whatweb,
     [switch]$All,
 
-    [string]$Output = "./results"
+    [string]$Output = "./securityreports"
 )
 
 # Crear carpeta de resultados con timestamp
